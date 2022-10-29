@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+MY_ASM
+MY_CPU
+MY_DIS_ASM

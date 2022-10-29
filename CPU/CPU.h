@@ -1,7 +1,7 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include "/Users/kirilllahnov/Documents/CPU/Stack/stack.h"
+#include "/Users/kirilllahnov/Documents/CPU_NEW/Stack/stack.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,8 +10,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "/Users/kirilllahnov/Documents/CPU/FileProcessing/FileProcessing.h"
-#include "/Users/kirilllahnov/Documents/CPU/enum.h"
+#include "/Users/kirilllahnov/Documents/CPU_NEW/FileProcessing/FileProcessing.h"
+#include "/Users/kirilllahnov/Documents/CPU_NEW/enum.h"
 
 const size_t VERSION_CPU = 2;
 const size_t SIGNATURE   = 0xFBACF;

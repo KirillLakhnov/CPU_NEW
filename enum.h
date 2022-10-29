@@ -16,7 +16,7 @@ enum BITE_VARIATIONS {
     BITE_MEMORY          = 1 << 7,
 };
 
-enum ERROR_CPU {
+enum ERRORS {
     GOOD_WORKING           = 0,
     ERROR_MEMMORY          = 1,
     ERROR_READING_FILE     = 2,
@@ -49,7 +49,7 @@ enum NUMBER_REGISTERS {
 };
 
 enum NUMBER_COMMAND {
-    HTL        = 0,
+    HLT        = 0,
     PUSH       = 1,
     ADD        = 2,
     SUB        = 3,

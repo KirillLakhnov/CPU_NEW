@@ -24,7 +24,7 @@ int CpuCtor (struct CPU* cpu)
     struct function_info func_info_mark = {.log_file_name = "stack_mark_dump.txt", .name_stack = "stack", .number_line_stack_name_main = __LINE__};
     cpu->stack_mark.func_info = func_info_mark;
 
-    cpu->file_info_cpu.file_name = "/Users/kirilllahnov/Documents/CPU/code_command.bin";
+    cpu->file_info_cpu.file_name = "/Users/kirilllahnov/Documents/CPU_NEW/code_command.bin";
 
     TextCtor (cpu);
 
@@ -130,17 +130,14 @@ int CommandAccomplishment (struct CPU* cpu)
     }
     
     cpu->ip = 3;
-    while (cpu->ip < (cpu->text_info_cpu.file_buffer_double[QUANTITY_COMMAND] + 2) && cpu->cmd_bool == 1)
+    while (cpu->ip < (cpu->text_info_cpu.file_buffer_double[QUANTITY_COMMAND] + 2))
     {
         unsigned long long cmd = (unsigned long long)cpu->text_info_cpu.file_buffer_double[cpu->ip] & 31;
 
         switch (cmd)
         {
-            #define DEF_COMMAND(name_cmd, code_cmd, there_is_argument, ...)  case code_cmd: __VA_ARGS__        \
-                                                                                            if (code_cmd != 0) \
-                                                                                            {                  \
-                                                                                                cpu->ip++;     \
-                                                                                            }                  \
+            #define DEF_COMMAND(name_cmd, code_cmd, there_is_argument, ...)  case code_cmd: __VA_ARGS__                 \
+                                                                                            cpu->ip++;                  \
                                                                                             break; 
 
             #define DEF_REG(name_cmd, code_cmd)

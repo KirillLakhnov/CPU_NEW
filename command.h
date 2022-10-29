@@ -3,7 +3,7 @@
 #define STACK_COMMAND &cpu->stack_command
 #define STACK_MARK    &cpu->stack_mark
 
-DEF_COMMAND (HTL,        0,  0, {cpu->cmd_bool = 0;})
+DEF_COMMAND (HLT,        0,  0, {return GOOD_WORKING;})
 DEF_COMMAND (PUSH,       1,  1, {double* argument = GetArgument(cpu); StackPush (STACK_COMMAND, *argument);})
 DEF_COMMAND (ADD,        2,  0, {StackPush (STACK_COMMAND,     StackPop(STACK_COMMAND)  + StackPop(STACK_COMMAND));})
 DEF_COMMAND (SUB,        3,  0, {StackPush (STACK_COMMAND,    -StackPop(STACK_COMMAND)  + StackPop(STACK_COMMAND));})

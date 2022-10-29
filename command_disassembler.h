@@ -31,7 +31,7 @@
                                                     }                                                                   \
                                                 }     
 
-DEF_COMMAND_DIS_ASM (HTL,        0,  0)
+DEF_COMMAND_DIS_ASM (HLT,        0,  0)
 DEF_COMMAND_DIS_ASM (ADD,        2,  0)
 DEF_COMMAND_DIS_ASM (SUB,        3,  0)
 DEF_COMMAND_DIS_ASM (MUL,        4,  0)

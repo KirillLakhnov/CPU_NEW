@@ -7,8 +7,8 @@
 #include <string.h>
 #include <math.h>
 
-#include "/Users/kirilllahnov/Documents/CPU/FileProcessing/FileProcessing.h"
-#include "/Users/kirilllahnov/Documents/CPU/enum.h"
+#include "/Users/kirilllahnov/Documents/CPU_NEW/FileProcessing/FileProcessing.h"
+#include "/Users/kirilllahnov/Documents/CPU_NEW/enum.h"
 
 int TextCtor (struct Text* code_bin, struct FileInfo* file_info_dis);
 
