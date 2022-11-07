@@ -8,8 +8,8 @@
 #include <string.h>
 #include <assert.h>
 
-#include "/Users/kirilllahnov/Documents/CPU_NEW/FileProcessing/FileProcessing.h"
-#include "/Users/kirilllahnov/Documents/CPU_NEW/enum.h"
+#include "../FileProcessing/FileProcessing.h"
+#include "../enum.h"
 
 const size_t MARK_ARRAY_SIZE = 50;
 const size_t VERSION_CPU     = 2;
@@ -42,7 +42,7 @@ int TextCtor (struct AsmCodeCreater* code_info);
 
 int CompilationFirstPass (struct AsmCodeCreater* code_info);
 
-int LineToString (struct Text* text_info); //_________
+void PutMark (char* cmd, int* ip, struct AsmCodeCreater* code_info);
 
 int Compilation (struct AsmCodeCreater* code_info);
 
@@ -54,6 +54,8 @@ int GetJmpArgument (struct AsmCodeCreater* code_info);
 
 int RegistrArgument (struct AsmCodeCreater* code_info);
 
-void FileCodeCmd (struct AsmCodeCreater* code_info);
+int FileCodeCmd (struct AsmCodeCreater* code_info);
+
+void TextDtor (struct AsmCodeCreater* code_info);
 
 #endif // ASM_H

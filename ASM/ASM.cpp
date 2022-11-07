@@ -16,12 +16,15 @@ int TextCtor (struct AsmCodeCreater* code_info)
 
 int CompilationFirstPass (struct AsmCodeCreater* code_info)
 {
+    assert (code_info);
     assert (code_info->text_info_asm);
     assert (code_info->text_info_asm->file_buffer_char);
 
     int length_cmd = 0;
     int counter = 0;
     int ip = 0;
+
+    char* buffer = code_info->text_info_asm->file_buffer_char;
 
     char* cmd = (char*) calloc (code_info->text_info_asm->size_buffer, sizeof(char));
     if (cmd == nullptr)
@@ -31,16 +34,16 @@ int CompilationFirstPass (struct AsmCodeCreater* code_info)
 
     while (counter < code_info->text_info_asm->size_buffer)
     {
-        sscanf (code_info->text_info_asm->file_buffer_char + counter, "%s %n", cmd, &length_cmd);
+        sscanf (buffer + counter, "%s %n", cmd, &length_cmd);
 
-        printf("\t%s\n", cmd);
+        //printf("\t%s\n", cmd);
         char* find_colon_in_cmd = strchr (cmd, ':');
 
         if (find_colon_in_cmd != nullptr)
         {
             if (find_colon_in_cmd - cmd == strlen (cmd) - 1)
             {
-                code_info->mark_array[code_info->free_mark].meaning_mark = ip;     // - code_info->free_mark;
+                code_info->mark_array[code_info->free_mark].meaning_mark = ip; 
                 code_info->mark_array[code_info->free_mark].name_mark = strdup (cmd);
 
                 code_info->mark_array[code_info->free_mark].name_mark[strlen(code_info->mark_array[code_info->free_mark].name_mark) - 1] = '\0';
@@ -57,17 +60,15 @@ int CompilationFirstPass (struct AsmCodeCreater* code_info)
 
         counter += length_cmd;
         
-        if (strchr(cmd, '+') != nullptr & strchr(cmd, '+') != cmd)
+        if (strchr(cmd, '+') != nullptr & strchr (cmd, '+') != cmd)
         {
-            printf ("ghfhurur\n");
             ip++;
         }
 
-        if (strcmp (cmd, "[") != 0 && strcmp (cmd, "]") != 0 && strcmp (cmd, "+") != 0)
+        if ((*cmd != ']') && (*cmd != '[') != 0 && (*cmd != '+')) // сравнение симвлов
         {
             ip++;
         }
-        else {printf ("ghfhurur\n");}
     }
 
     code_info->number_cmd = ip + 3;
@@ -77,21 +78,22 @@ int CompilationFirstPass (struct AsmCodeCreater* code_info)
     return GOOD_WORKING;
 }
 
-int LineToString (struct Text* text_info)
+void PutMark (char* cmd, int* ip, struct AsmCodeCreater* code_info)
 {
-    assert (text_info);
-    assert (text_info->file_buffer_char);
+    char* find_colon_in_cmd = strchr (cmd, ':');
 
-    int number_string = 0;
-    for (int i = 0; i < text_info->size_buffer; i++)
+    if (find_colon_in_cmd != nullptr)
+
+    if (find_colon_in_cmd - cmd == strlen (cmd) - 1)
     {
-        if (text_info->file_buffer_char[i] == '\n')
-        {
-            text_info->file_buffer_char[i] = '\0';
-            number_string++;
-        }
+        code_info->mark_array[code_info->free_mark].meaning_mark = *ip; 
+        code_info->mark_array[code_info->free_mark].name_mark = strdup (cmd);
+
+        code_info->mark_array[code_info->free_mark].name_mark[strlen(code_info->mark_array[code_info->free_mark].name_mark) - 1] = '\0';
+        code_info->free_mark++;
+
+        (*ip)--;
     }
-    return number_string + 1;
 }
 
 int Compilation (struct AsmCodeCreater* code_info)
@@ -99,7 +101,12 @@ int Compilation (struct AsmCodeCreater* code_info)
     assert (code_info->text_info_asm);
     assert (code_info->text_info_asm->file_buffer_char);
 
-    CompilationFirstPass (code_info);
+    char* buffer = code_info->text_info_asm->file_buffer_char;
+
+    if (CompilationFirstPass (code_info) != GOOD_WORKING)
+    {
+        return ERROR_COMPILATION_FIRST_PASS;
+    }
 
     code_info->cmd_array = (double*) calloc (code_info->number_cmd, sizeof (double));
     if (code_info->cmd_array == nullptr)
@@ -109,7 +116,7 @@ int Compilation (struct AsmCodeCreater* code_info)
 
     code_info->cmd_array[0] = SIGNATURE; 
     code_info->cmd_array[1] = VERSION_CPU;
-    code_info->cmd_array[2] = code_info->number_cmd; //______________________________
+    code_info->cmd_array[2] = code_info->number_cmd;
 
     code_info->ip = 3, code_info->counter_string = 0, code_info->counter_symbol = 0;
 
@@ -123,7 +130,7 @@ int Compilation (struct AsmCodeCreater* code_info)
 
     while (code_info->counter_symbol < code_info->text_info_asm->size_buffer)
     {
-        sscanf (code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd);
+        sscanf (buffer + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd);
 
         code_info->counter_symbol += length_cmd;
 
@@ -131,15 +138,13 @@ int Compilation (struct AsmCodeCreater* code_info)
         {
             return ERROR_COMMAND_CMP;
         }
-
-        if (code_info->text_info_asm->file_buffer_char[code_info->counter_symbol] == '\0')
-        {
-            code_info->counter_symbol++;
-            continue;
-        }
     }
 
-    free (code_info->cmd);
+    if (code_info->cmd)
+    {
+        free (code_info->cmd);
+        code_info->cmd = nullptr;
+    }
 
     return GOOD_WORKING;
 }
@@ -150,7 +155,7 @@ int CommandCmp (struct AsmCodeCreater* code_info)
     assert (code_info->text_info_asm->file_buffer_char);
     assert (code_info->cmd_array);
 
-    printf ("%s\t%lu\n", code_info->cmd, code_info->ip);
+    //printf ("%s\t\t%lu\n", code_info->cmd, code_info->ip);
 
     #define DEF_COMMAND(name_cmd, code_cmd, there_is_argument, ...)     if (stricmp (code_info->cmd, #name_cmd) == 0)                                              \
                                                                         {                                                                               \
@@ -168,12 +173,13 @@ int CommandCmp (struct AsmCodeCreater* code_info)
 
     #define DEF_REG(name_cmd, code_cmd)
 
-    #include "/Users/kirilllahnov/Documents/CPU/command.h"
+    #include "../command.h"
 
     #undef DEF_COMMAND
     #undef DEF_REG
 
-    /* else */ if (!(strchr(code_info->cmd, ':') != nullptr && (strchr(code_info->cmd, ':') - code_info->cmd == strlen (code_info->cmd) - 1)))
+    /* else */ if (!(strchr(code_info->cmd, ':') != nullptr && 
+                    (strchr(code_info->cmd, ':') - code_info->cmd == strlen (code_info->cmd) - 1)))
     {
         return INCORRECT_COMMAND;
     }
@@ -188,17 +194,20 @@ int GetPushPopArgument (struct AsmCodeCreater* code_info)
     assert (code_info->cmd_array);
 
     int length_cmd = 0;
+
+    char* buffer = code_info->text_info_asm->file_buffer_char;
         
-    if (*(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol) == '[')
+    if (*(buffer + code_info->counter_symbol) == '[')
     {
         code_info->cmd_array[code_info->ip - 1] += BITE_MEMORY;
         code_info->counter_symbol++;
     }
 
-    if (sscanf(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%lf %n", &code_info->cmd_array[code_info->ip], &length_cmd) != 0)
+    if (sscanf(buffer + code_info->counter_symbol, "%lf %n", &code_info->cmd_array[code_info->ip], &length_cmd) != 0)
     {
         code_info->cmd_array[code_info->ip - 1] += BITE_IMMEDIATE_CONST;
-        if (*(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol + length_cmd) == '+')
+
+        if (*(buffer + code_info->counter_symbol + length_cmd) == '+')
         {
             code_info->counter_symbol += length_cmd + 1;
             code_info->cmd_array[code_info->ip - 1] += BITE_REGISTER;
@@ -209,7 +218,7 @@ int GetPushPopArgument (struct AsmCodeCreater* code_info)
 
         code_info->ip++;
     }
-    else if (sscanf(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%lf %n", &code_info->cmd_array[code_info->ip], &length_cmd) == 0)
+    else if (sscanf(buffer + code_info->counter_symbol, "%lf %n", &code_info->cmd_array[code_info->ip], &length_cmd) == 0)
     {
         code_info->cmd_array[code_info->ip - 1] += BITE_REGISTER;
 
@@ -218,7 +227,7 @@ int GetPushPopArgument (struct AsmCodeCreater* code_info)
         
     code_info->counter_symbol += length_cmd;
 
-    if (*(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol) == ']')
+    if (*(buffer + code_info->counter_symbol) == ']')
     {
         code_info->counter_symbol++;
     }
@@ -234,7 +243,9 @@ int RegistrArgument (struct AsmCodeCreater* code_info)
 
     int length_cmd = 0;
 
-    if (sscanf(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd) != 1)
+    char* buffer = code_info->text_info_asm->file_buffer_char;
+
+    if (sscanf(buffer + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd) != 1)
     {
         return ERROR_SSCANF;
     }
@@ -253,7 +264,7 @@ int RegistrArgument (struct AsmCodeCreater* code_info)
 
     #define DEF_COMMAND(name_cmd, code_cmd, there_is_argument, ...)
 
-    #include "/Users/kirilllahnov/Documents/CPU/command.h"
+    #include "../command.h"
     
     #undef DEF_COMMAND
     #undef DEF_REG
@@ -265,7 +276,7 @@ int RegistrArgument (struct AsmCodeCreater* code_info)
     code_info->counter_symbol += length_cmd;
     if (find_square_bracket == nullptr)
     {
-        sscanf(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd);
+        sscanf(buffer + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd);
         find_square_bracket = strchr (code_info->cmd, ']');
 
         if (find_square_bracket != nullptr)
@@ -284,17 +295,20 @@ int GetJmpArgument (struct AsmCodeCreater* code_info)
     assert (code_info->cmd_array);
 
     int length_cmd = 0;
-    if (sscanf(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%lf %n", &code_info->cmd_array[code_info->ip], &length_cmd) != 0)
+
+    char* buffer = code_info->text_info_asm->file_buffer_char;
+
+    if (sscanf(buffer + code_info->counter_symbol, "%lf %n", &code_info->cmd_array[code_info->ip], &length_cmd) != 0)
     {
         code_info->ip++;
     }
     else
     {
-        sscanf(code_info->text_info_asm->file_buffer_char + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd);
+        sscanf(buffer + code_info->counter_symbol, "%s %n", code_info->cmd, &length_cmd);
 
         for (int j = 0; j < code_info->free_mark; j++)
         {   
-            if (strcmp (code_info->cmd + 1, code_info->mark_array[j].name_mark) == 0)
+            if (stricmp (code_info->cmd + 1, code_info->mark_array[j].name_mark) == 0)
             {
                 code_info->cmd_array[code_info->ip] = code_info->mark_array[j].meaning_mark;
                 code_info->ip++;
@@ -309,15 +323,61 @@ int GetJmpArgument (struct AsmCodeCreater* code_info)
     return GOOD_WORKING;
 }
 
-void FileCodeCmd (struct AsmCodeCreater* code_info)
+int FileCodeCmd (struct AsmCodeCreater* code_info)
 {
     assert (code_info->text_info_asm);
     assert (code_info->text_info_asm->file_buffer_char);
     assert (code_info->cmd_array);
 
     FILE* code_cmd_file = fopen ("code_command.bin", "wb");
+    if (code_cmd_file == nullptr)
+    {
+       return ERROR_FILE_OPEN;
+    }
 
-    fwrite (code_info->cmd_array, sizeof(double), code_info->number_cmd + 3, code_cmd_file);
+    if (fwrite (code_info->cmd_array, sizeof(double), code_info->number_cmd + 3, code_cmd_file) != code_info->number_cmd + 3)
+    {
+        return ERROR_FWRITE;
+    }
 
-    fclose (code_cmd_file);
+    if (fclose (code_cmd_file))
+    {
+        return ERROR_FILE_CLOSE;
+    }
+
+    return GOOD_WORKING;
+}
+
+void TextDtor (struct AsmCodeCreater* code_info)
+{   
+    char* buffer = code_info->text_info_asm->file_buffer_char;
+
+    if (code_info->cmd_array)
+    {
+        free (code_info->cmd_array);
+        code_info->cmd_array = nullptr;
+    }
+
+    for (int i = 0; i < MARK_ARRAY_SIZE; i++)
+    {
+        code_info->mark_array[i].name_mark = nullptr;
+        code_info->mark_array[i].meaning_mark = NAN;
+    }
+
+    if (buffer)
+    {
+        free(buffer);
+        buffer = nullptr;
+    }
+
+    code_info->text_info_asm->size_buffer = NUMBER_DTOR_VALUE;
+
+    code_info->number_cmd = NUMBER_DTOR_VALUE;
+    code_info->max_line_cmd = NUMBER_DTOR_VALUE;
+    code_info->free_mark = NUMBER_DTOR_VALUE;
+    code_info->ip = NUMBER_DTOR_VALUE;
+    code_info->counter_string = NUMBER_DTOR_VALUE;
+    code_info->counter_symbol = NUMBER_DTOR_VALUE;
+
+    code_info->cmd = nullptr;
 }

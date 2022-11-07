@@ -1,84 +1,259 @@
-CIRCLE:
-
-empty
+QUADRATIC_EQUATION:
 
 in
 pop rax
-
-push 10000
+in
 pop rbx
-
-push rbx
-sqrt
-push 2
-div
-int 
-push 1
-sub
+in
 pop rcx
 
+push rax
 push 0
-pop rdx
+je :is_null_a
+jmp :is_null_not_a
 
-call :while
-dump
-out_screen
-htl
-
-while:
-    push rdx
+is_null_a:
     push rbx
-    jae :ret
+    push 0
+    je :is_null_a_b
+    jmp :is_null_a_not_b
 
-    push rdx
-    push rbx
-    sqrt
-    int
-    remain
-    int
-    pop rex
+    is_null_a_b:
+        push rcx
+        push 0
+        je :INF_SOLUTION
+        jmp :ZERO_SOLUTION
 
-    push rdx
-    push rbx
-    sqrt
-    int
-    div
-    int
-    pop rfx
+    is_null_a_not_b:
+        push rcx
+        push 0
+        je :ONE_X_0
+        jmp :ONE_X
 
-    call :circle_equation
-    push 25
-    ja :while_plus
-
-    call :circle_equation
-    push -25
-    jb :while_plus
-
-    push 42
-    pop [rdx]
-    jmp :while_plus
-
-circle_equation:
-    push rfx
+is_null_not_a:
     push rcx
-    sub
-    sqr
-    push rex
-    push rcx
-    sub
-    sqr
-    add
+    push 0
+    je :is_null_not_a_c
+    jmp :is_null_not_a_not_c
+
+    is_null_not_a_c:
+        push rbx
+        push 0
+        je :ONE_X_0
+        jmp :is_null_not_a_c_not_b
+
+        is_null_not_a_c_not_b:
+            push 88
+            outchr
+            push 95
+            outchr
+            push 49
+            outchr
+            push 61
+            outchr
+            push 0
+            out
+
+            push 88
+            outchr
+            push 95
+            outchr
+            push 50
+            outchr
+            push 61
+            outchr
+            push rbx
+            push -1
+            mul
+            push rax
+            div
+            out
+
+            hlt
+
+is_null_not_a_not_c:
+    push rbx
+    push rbx
+    mul
+    push 4
     push rax
-    sqr
+    push rcx
+    mul
+    mul
     sub
-    jmp :ret
-
-while_plus:
-    push rdx
-    push 1
-    add
     pop rdx
-    jmp :while
+    push rdx
+    push 0
+    je :DISCRIMENANT_NULL
+    push rdx
+    push 0
+    ja :DISCRIMENANT_MORE_NULL
+    push rdx
+    push 0
+    jb :ZERO_SOLUTION
 
-ret:
-    ret
+DISCRIMENANT_NULL:
+    push rbx
+    push -1
+    mul
+    push 2
+    push rax
+    mul
+    div
+    push 88
+    outchr
+    push 32
+    outchr
+    push 61
+    outchr
+    push 32
+    outchr
+    out
+    hlt
+
+DISCRIMENANT_MORE_NULL:
+    push 88
+    outchr
+    push 95
+    outchr
+    push 49
+    outchr
+    push 32
+    outchr
+    push 61
+    outchr
+    push 32
+    outchr
+
+    push rbx
+    push -1
+    mul
+    push rdx
+    sqrt
+    push -1
+    mul
+    sub
+    push 2
+    push rax
+    mul
+    div
+    out
+
+    push 88
+    outchr
+    push 95
+    outchr
+    push 50
+    outchr
+    push 32
+    outchr
+    push 61
+    outchr
+    push 32
+    outchr
+
+    push rbx
+    push -1
+    mul
+    push rdx
+    sqrt
+    push -1
+    mul
+    add
+    push 2
+    push rax
+    mul
+    div
+    out
+
+    hlt
+
+ONE_X:
+    push rcx
+    push -1
+    mul
+    push rbx
+    div
+    push 88
+    outchr
+    push 32
+    outchr
+    push 61
+    outchr
+    push 32
+    outchr
+    out
+    hlt
+
+ONE_X_0:
+    push 88
+    outchr
+    push 32
+    outchr
+    push 61
+    outchr
+    push 32
+    outchr
+    push 0
+    out
+    hlt
+
+INF_SOLUTION:
+    push 73
+    outchr
+    push 78
+    outchr
+    push 70
+    outchr
+    push 32
+    outchr
+    push 83
+    outchr
+    push 79
+    outchr
+    push 76
+    outchr
+    push 85
+    outchr
+    push 84
+    outchr
+    push 73
+    outchr
+    push 79
+    outchr
+    push 78
+    outchr
+    push 10
+    outchr
+    hlt
+
+ZERO_SOLUTION:
+    push 90
+    outchr
+    push 69
+    outchr
+    push 82
+    outchr
+    push 79
+    outchr
+    push 32
+    outchr
+    push 83
+    outchr
+    push 79
+    outchr
+    push 76
+    outchr
+    push 85
+    outchr
+    push 84
+    outchr
+    push 73
+    outchr
+    push 79
+    outchr
+    push 78
+    outchr
+    push 10
+    outchr
+    hlt

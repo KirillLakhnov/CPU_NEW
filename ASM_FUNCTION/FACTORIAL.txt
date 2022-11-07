@@ -1,4 +1,4 @@
-FACTORIAL:
+FACT:
 
 in
 pop rax
@@ -18,7 +18,7 @@ jne :out_number_negative
 call :factorial
 push rbx
 out
-htl
+hlt
 
 factorial:
     push rax
@@ -46,4 +46,4 @@ out_number_negative:
     pop rbx
     push rbx
     out
-    htl
+    hlt

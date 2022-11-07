@@ -69,7 +69,7 @@ is_null_not_a:
             div
             out
 
-            htl
+            hlt
 
 is_null_not_a_not_c:
     push rbx
@@ -109,7 +109,7 @@ DISCRIMENANT_NULL:
     push 32
     outchr
     out
-    htl
+    hlt
 
 DISCRIMENANT_MORE_NULL:
     push 88
@@ -166,7 +166,7 @@ DISCRIMENANT_MORE_NULL:
     div
     out
 
-    htl
+    hlt
 
 ONE_X:
     push rcx
@@ -183,7 +183,7 @@ ONE_X:
     push 32
     outchr
     out
-    htl
+    hlt
 
 ONE_X_0:
     push 88
@@ -196,7 +196,7 @@ ONE_X_0:
     outchr
     push 0
     out
-    htl
+    hlt
 
 INF_SOLUTION:
     push 73
@@ -225,7 +225,7 @@ INF_SOLUTION:
     outchr
     push 10
     outchr
-    htl
+    hlt
 
 ZERO_SOLUTION:
     push 90
@@ -256,4 +256,4 @@ ZERO_SOLUTION:
     outchr
     push 10
     outchr
-    htl
+    hlt

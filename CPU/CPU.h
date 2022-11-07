@@ -10,8 +10,8 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "/Users/kirilllahnov/Documents/CPU_NEW/FileProcessing/FileProcessing.h"
-#include "/Users/kirilllahnov/Documents/CPU_NEW/enum.h"
+#include "../FileProcessing/FileProcessing.h"
+#include "../enum.h"
 
 const size_t VERSION_CPU = 2;
 const size_t SIGNATURE   = 0xFBACF;

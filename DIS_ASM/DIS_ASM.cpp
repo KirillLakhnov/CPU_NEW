@@ -37,7 +37,7 @@ int CommandAccomplishment (size_t* ip, struct Text* code_bin)
                                                                                                     (*ip)++;                                \
                                                                                                     break;
 
-            #include "/Users/kirilllahnov/Documents/CPU/command_disassembler.h"
+            #include "/Users/kirilllahnov/Documents/CPU_NEW/command_disassembler.h"
 
             #undef DEF_COMMAND_DIS_ASM
 
@@ -55,11 +55,11 @@ int CommandAccomplishment (size_t* ip, struct Text* code_bin)
 
 void TextDtor (struct Text* code_bin, struct FileInfo* file_info_dis)
 {
-    for (int i = 0; i < code_bin->size_buffer; i++)
+    if (code_bin->file_buffer_double)
     {
-        code_bin->file_buffer_double[i] = NULL_DOUBLE;
+        free (code_bin->file_buffer_double);
+        code_bin->file_buffer_double = nullptr;
     }
-    free (code_bin->file_buffer_double);
 
     code_bin->size_buffer = NUMBER_DTOR_VALUE;
 }

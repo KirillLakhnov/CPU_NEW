@@ -4,7 +4,7 @@
 //#define NDEBUG
 
 #include "stack_common.h"
-#include "/Users/kirilllahnov/Documents/CPU/enum.h"
+#include "../enum.h"
 
 #include <stdio.h>
 #include <stdlib.h>

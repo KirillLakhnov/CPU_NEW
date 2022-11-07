@@ -8,7 +8,7 @@
 #include <ctype.h>
 #include <math.h>
 
-#include "/Users/kirilllahnov/Documents/CPU/enum.h"
+#include "../enum.h"
 
 
 struct Text {

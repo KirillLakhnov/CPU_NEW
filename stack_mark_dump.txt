@@ -1,0 +1,34 @@
+-----------------------------------------------
+StackPush () at stack.cpp (43):
+Stack[0x7ffeedc38768] (OK) "stack" at main () at main.cpp (24)
+{
+	size          = 1
+	capacity      = 5
+	code of error = 0
+	data[0x7f9900c05938]
+	{
+		* [0] = 29.000000
+		  [1] = nan
+		  [2] = nan
+		  [3] = nan
+		  [4] = nan
+	}
+}
+-----------------------------------------------
+-----------------------------------------------
+StackPush () at stack.cpp (43):
+Stack[0x7ffeedc38768] (OK) "stack" at main () at main.cpp (24)
+{
+	size          = 2
+	capacity      = 5
+	code of error = 0
+	data[0x7f9900c05938]
+	{
+		* [0] = 29.000000
+		* [1] = 59.000000
+		  [2] = nan
+		  [3] = nan
+		  [4] = nan
+	}
+}
+-----------------------------------------------

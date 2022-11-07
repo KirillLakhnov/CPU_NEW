@@ -5,7 +5,11 @@ int main()
     struct CPU cpu = {};
     CpuCtor (&cpu);
 
-    CommandAccomplishment (&cpu);
+    if (CommandAccomplishment (&cpu) != GOOD_WORKING)
+    {
+        printf ("ERROR SYNTAX, line = %d", __LINE__);
+        return 1;
+    }
 
     CpuDtor (&cpu);
 

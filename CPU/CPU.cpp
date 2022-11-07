@@ -24,7 +24,7 @@ int CpuCtor (struct CPU* cpu)
     struct function_info func_info_mark = {.log_file_name = "stack_mark_dump.txt", .name_stack = "stack", .number_line_stack_name_main = __LINE__};
     cpu->stack_mark.func_info = func_info_mark;
 
-    cpu->file_info_cpu.file_name = "/Users/kirilllahnov/Documents/CPU_NEW/code_command.bin";
+    cpu->file_info_cpu.file_name = "code_command.bin";
 
     TextCtor (cpu);
 
@@ -70,10 +70,12 @@ double* GetArgument (struct CPU* cpu)
     assert (cpu->registers);
     assert (cpu->ram);
 
-    double* argument = (double*) calloc (1, sizeof(double));
-    (*argument) = 0;
+    double* buffer = cpu->text_info_cpu.file_buffer_double;
+
+    static double argument = 0;
+    argument = 0;
     
-    unsigned long long cmd = (unsigned long long)cpu->text_info_cpu.file_buffer_double[cpu->ip];
+    unsigned long long cmd = (unsigned long long)buffer[cpu->ip];
     unsigned long long cmd_no_type = cmd & 31;
 
     if (cmd & BITE_IMMEDIATE_CONST)
@@ -81,7 +83,7 @@ double* GetArgument (struct CPU* cpu)
         assert (!(cmd_no_type == POP && ((cmd & BITE_MEMORY) == 0)));
 
         cpu->ip++;
-        (*argument) += cpu->text_info_cpu.file_buffer_double[cpu->ip];
+        argument += buffer[cpu->ip];
     }  
     if (cmd & BITE_REGISTER)
     {
@@ -91,25 +93,26 @@ double* GetArgument (struct CPU* cpu)
 
         if (cmd_no_type == PUSH || (cmd_no_type == POP && cmd & BITE_MEMORY))
         {
-            (*argument) += cpu->registers[(unsigned long long)cpu->text_info_cpu.file_buffer_double[cpu->ip]];
+            argument += cpu->registers[(unsigned long long)buffer[cpu->ip]];
         }
         else
         {
-            return &cpu->registers[(unsigned long long)cpu->text_info_cpu.file_buffer_double[cpu->ip]];
+            return &cpu->registers[(unsigned long long)buffer[cpu->ip]];
         }
     }
     if (cmd & BITE_MEMORY)
     {
         if (cmd_no_type == PUSH)
         {
-            (*argument) = cpu->ram[(unsigned long long)(*argument)];
+            argument = cpu->ram[(unsigned long long)(argument)];
         }
         else
         {
-            return &cpu->ram[(unsigned long long)(*argument)];
+            return &cpu->ram[(unsigned long long)(argument)];
         }
     }
-    return argument;
+
+    return &argument;
 }
 
 int CommandAccomplishment (struct CPU* cpu)
@@ -120,20 +123,22 @@ int CommandAccomplishment (struct CPU* cpu)
     assert (cpu->registers);
     assert (cpu->ram);
 
-    if (cpu->text_info_cpu.file_buffer_double[SIGNATURE_NUMBER_CELL] != SIGNATURE)
+    double* buffer = cpu->text_info_cpu.file_buffer_double;
+
+    if (buffer[SIGNATURE_NUMBER_CELL] != SIGNATURE)
     {
         return ERROR_SIGNATURE;
     }
-    if (cpu->text_info_cpu.file_buffer_double[VERSION_CPU_NUMBER_CELL] != VERSION_CPU)
+    if (buffer[VERSION_CPU_NUMBER_CELL] != VERSION_CPU)
     {
         return ERROR_VERSION_CPU;
     }
     
     cpu->ip = 3;
-    while (cpu->ip < (cpu->text_info_cpu.file_buffer_double[QUANTITY_COMMAND] + 2))
+    while (cpu->ip < (buffer[QUANTITY_COMMAND] + 2))
     {
-        unsigned long long cmd = (unsigned long long)cpu->text_info_cpu.file_buffer_double[cpu->ip] & 31;
-
+        unsigned long long cmd = (unsigned long long)buffer[cpu->ip] & 31;
+        
         switch (cmd)
         {
             #define DEF_COMMAND(name_cmd, code_cmd, there_is_argument, ...)  case code_cmd: __VA_ARGS__                 \
@@ -142,12 +147,12 @@ int CommandAccomplishment (struct CPU* cpu)
 
             #define DEF_REG(name_cmd, code_cmd)
 
-            #include "/Users/kirilllahnov/Documents/CPU/command.h"
+            #include "../command.h"
 
             #undef DEF_COMMAND
             #undef DEF_REG
 
-            default: assert (0 && "ERROR SYNTAX COMMAND\n");
+            default: return ERROR_SYNTAX_COMMAND;
         }
     }
 
@@ -215,13 +220,14 @@ void TextDtor (struct CPU* cpu)
 {
     assert(cpu->text_info_cpu.file_buffer_double);
 
-    for (int i = 0; i < cpu->text_info_cpu.file_buffer_double[QUANTITY_COMMAND] + 2; i++)
+    double* buffer = cpu->text_info_cpu.file_buffer_double;
+  
+    if (buffer)
     {
-        cpu->text_info_cpu.file_buffer_double[i] = NAN;
-    }    
-    free(cpu->text_info_cpu.file_buffer_double);
+        free(buffer);
+        buffer = nullptr;
+    }
 
-    cpu->text_info_cpu.file_buffer_double = nullptr;
     cpu->text_info_cpu.size_buffer = 0;
 }
 
@@ -234,15 +240,20 @@ void CpuDtor (struct CPU* cpu)
     cpu->ip = NUMBER_DTOR_VALUE;
     cpu->cmd_bool = NUMBER_DTOR_VALUE;
 
-    for (int i = 0; i < RAM_SIZE; i++)
+    if (cpu->ram)
     {
-        cpu->ram[i] = NULL_DOUBLE;
+        free (cpu->ram);
+        cpu->ram = nullptr;
     }
-    free (cpu->ram);
 
     for (int i = 0; i < REGISTERS_SIZE; i++)
     {
         cpu->registers[i] = NULL_DOUBLE;
     }
-    free (cpu->registers);
+
+    if (cpu->registers)
+    {
+        free (cpu->registers);
+        cpu->registers = nullptr;
+    }
 };
